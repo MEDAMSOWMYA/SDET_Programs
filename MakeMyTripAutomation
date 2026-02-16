@@ -1,0 +1,76 @@
+package comprehensiveassignment;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
+
+public class MakeMyTripAutomation {
+
+    static WebDriver driver;
+    static WebDriverWait wait;
+
+    public static void main(String[] args) {
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-notifications");
+
+        driver = new ChromeDriver(options);
+        driver.manage().window().maximize();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+        try {
+            launchURL("https://www.makemytrip.com/");
+            System.out.println("URL Launched Successfully");
+
+            clickElement(By.xpath("//span[@class='commonModal__close']"));
+            System.out.println("Popup Closed Successfully");
+
+            clickElement(By.xpath("//span[text()='Flights']"));
+            System.out.println("Flights Tab Clicked Successfully");
+
+            clickElement(By.xpath("//li[@data-cy='oneWayTrip']"));
+            System.out.println("One Way Selected Successfully");
+
+            clickElement(By.xpath("//label[@for='fromCity']"));
+            sendKeys(By.xpath("//input[@placeholder='From']"), "Hyderabad");
+            clickElement(By.xpath("(//ul[@role='listbox']//li)[1]"));
+            System.out.println("From Location Entered Successfully");
+
+            clickElement(By.xpath("//label[@for='toCity']"));
+            sendKeys(By.xpath("//input[@placeholder='To']"), "Delhi");
+            clickElement(By.xpath("(//ul[@role='listbox']//li)[1]"));
+            System.out.println("To Location Entered Successfully");
+
+        } catch (Exception e) {
+            System.out.println("Error occurred: " + e.getMessage());
+        } finally {
+            if (driver != null) {
+                driver.quit();
+                System.out.println("Browser Closed Successfully");
+            }
+        }
+    }
+
+    public static void launchURL(String url) {
+        driver.get(url);
+    }
+
+    public static WebElement getElement(By locator) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    public static void clickElement(By locator) {
+        getElement(locator).click();
+    }
+
+    public static void sendKeys(By locator, String value) {
+        WebElement element = getElement(locator);
+        element.clear();
+        element.sendKeys(value);
+    }
+}
