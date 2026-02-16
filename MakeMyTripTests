@@ -1,0 +1,66 @@
+package comprehensiveassignment;
+
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.Assert;
+import org.testng.annotations.*;
+
+public class MakeMyTripTests {
+
+    WebDriver driver;
+
+    public void launchBrowser(String browser, String url) {
+        if(browser.equalsIgnoreCase("chrome")) {
+            driver = new ChromeDriver();
+        } else if(browser.equalsIgnoreCase("firefox")) {
+            driver = new FirefoxDriver();
+        }
+        driver.manage().window().maximize();
+        driver.get(url);
+    }
+
+    public void click(By locator) {
+        driver.findElement(locator).click();
+    }
+
+    public void type(By locator, String text) {
+        driver.findElement(locator).clear();
+        driver.findElement(locator).sendKeys(text);
+    }
+
+    @BeforeMethod
+    @Parameters("browser")
+    public void setup(@Optional("chrome") String browser) {
+        launchBrowser(browser, "https://www.makemytrip.com/");
+    }
+
+    @Test(priority = 1)
+    public void verifyLogo() throws InterruptedException {
+        Thread.sleep(3000); 
+        By logo = By.xpath("//img[contains(@alt,'MakeMyTrip')]");
+        Assert.assertTrue(driver.findElement(logo).isDisplayed(), "Logo not found!");
+    }
+
+    @Test(priority = 2)
+    public void oneWayFlightSearch() throws InterruptedException {
+        Thread.sleep(3000); 
+        click(By.xpath("//li[@data-cy='menu_Flights']"));
+        click(By.xpath("//li[@data-cy='oneWayTrip']"));
+        type(By.xpath("//label[@for='fromCity']//input"), "Delhi");
+        Thread.sleep(2000);
+        click(By.xpath("//ul[@role='listbox']//li[1]"));
+        type(By.xpath("//label[@for='toCity']//input"), "Mumbai");
+        Thread.sleep(2000);
+        click(By.xpath("//ul[@role='listbox']//li[1]"));
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if(driver != null) {
+            driver.quit();
+        }
+    }
+}
