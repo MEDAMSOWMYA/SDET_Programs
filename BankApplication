@@ -1,0 +1,83 @@
+package comprehensiveassignment;
+
+public class BankApplication {
+
+    public static void main(String[] args) {
+
+        Account savings = new SavingsAccount("Arjun", 20000);
+        savings.displayAccountDetails();
+        savings.calculateInterest();
+        savings.displayAccountDetails();
+
+        System.out.println("-----------------");
+
+        Account current = new CurrentAccount("Max", 5000);
+        current.displayAccountDetails();
+        current.calculateInterest();
+
+        CurrentAccount ca = (CurrentAccount) current;
+        ca.withdraw(7000);
+        ca.displayAccountDetails();
+    }
+}
+	class Account {
+
+	    protected String accountHolderName;
+	    protected double balance;
+	    protected double interestRate; 
+
+	    public Account(String accountHolderName, double balance, double interestRate) {
+	        this.accountHolderName = accountHolderName;
+	        this.balance = balance;
+	        this.interestRate = interestRate;
+	    }
+
+	    public void calculateInterest() {
+	        double interest = balance * interestRate / 100;
+	        balance += interest;
+	        System.out.println("Interest added: " + interest);
+	    }
+
+	    public void displayAccountDetails() {
+	        System.out.println("Account Holder: " + accountHolderName);
+	        System.out.println("Balance: " + balance);
+	    }
+	}
+
+	
+	class SavingsAccount extends Account {
+
+	    public SavingsAccount(String accountHolderName, double balance) {
+	        super(accountHolderName, balance, 4.0); 
+	    }
+
+	    @Override
+	    public void calculateInterest() {
+	        System.out.println("Calculating Savings Account Interest: ");
+	        super.calculateInterest();
+	    }
+	}
+	
+	
+  	class CurrentAccount extends Account {
+
+	    private double overdraftLimit = 5000;
+
+	    public CurrentAccount(String accountHolderName, double balance) {
+	        super(accountHolderName, balance, 0.0); 
+	    }
+	    
+	    @Override
+	    public void calculateInterest() {
+	        System.out.println("Current Account does not provide interest");
+	    }
+
+	    public void withdraw(double amount) {
+	        if (balance + overdraftLimit >= amount) {
+	            balance -= amount;
+	            System.out.println("Withdrawal successful");
+	        } else {
+	            System.out.println("Overdraft limit exceeded");
+	        }
+	    }
+	}
